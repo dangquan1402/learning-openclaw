@@ -36,6 +36,7 @@ A structured knowledge base for learning [OpenClaw](https://github.com/openclaw/
 | 6 | [GoClaw (Go Rewrite)](notes/08-goclaw.md) | Multi-tenant, PostgreSQL, ~35MB RAM, 5-layer security | ⬜ |
 | 7 | [Chat-with-Documents Landscape](notes/09-chat-with-docs.md) | Top 15 RAG projects ranked: Dify, Open WebUI, RAGFlow, etc. | ⬜ |
 | 7.1 | [RAG Limitations & Build vs Buy](notes/10-rag-limitations.md) | Real failures, tool problems, RAG vs long context, when to build your own | ⬜ |
+| 7.2 | [Kotaemon Deep Dive](notes/11-kotaemon.md) | PDF citations, 3 GraphRAG modes, hybrid search, 5 reasoning pipelines | ⬜ |
 
 ### Quick Reference
 - [Resources & Links](notes/06-resources.md) — Docs, tutorials, community links
