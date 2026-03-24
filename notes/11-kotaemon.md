@@ -236,6 +236,76 @@ Data directory (`ktem_app_data`) is **fully portable** — move between installa
 | Document QA is your primary use case | RAG is just one feature among many (→ Dify) |
 | Team of <50 users | You need multi-tenant SaaS |
 
+## Community Voices
+
+### What People Love
+
+> *"Finally tried Kotaemon, an open-source RAG tool for document chat! With local models, it's free and private. Perfect for journalists and researchers."* — @fdaudens, Hugging Face
+
+> *"The chat results Kotaemon produces are solid and would save time and energy compared to creating their own pipeline."* — r/LocalLLaMA user
+
+**Most praised features:**
+- Clean, minimalist UI — consistently praised
+- PDF citation highlighting — "enables verifying facts vs hallucinations"
+- Configurable prompts — adjust retrieval & generation from the UI
+- Free + private with local models
+
+### What People Complain About
+
+**#1 complaint: GraphRAG dependency hell**
+- Issue #172: GraphRAG requires Rust/Cargo during Docker build
+- Issue #545: *"Dependencies not installed [GraphRAG and Nano-GraphRAG]"* despite Docker setup
+- Issue #142: Version conflicts with `pip install graphrag`
+- This is the single most recurring complaint
+
+**#2: Ollama/Local LLM issues**
+- Issue #281: *"Critical: OpenAI API Conflict Blocking Local Ollama LLM Functionality"*
+- Issue #224: Ollama OpenAI-compatible endpoint not working
+- Local LLM setups broken by unexpected OpenAI API dependencies
+
+**#3: No API endpoint**
+- Issue #581: Users want Kotaemon as a backend service, no API available
+- Discussion #330: User tried *"at least 4-5 different API endpoints for file uploading, with none of them working"*
+
+**#4: Missing access controls**
+- Issue #376: *"Document access control is required in medium to large teams for which privacy and separation of knowledge is important."* — Still open, no response.
+
+**#5: Maintenance concerns**
+- Discussion #778 (Aug 2025): *"I've noticed that there haven't been any new commits since the latest release"* — **maintainers never responded**
+- Feature requests sit open for months with no maintainer response
+- Development happens in bursts, not continuous
+
+### Hacker News Reception
+
+Multiple HN front-page appearances:
+- [Kotaemon: open-source RAG for chatting with docs](https://news.ycombinator.com/item?id=42571272) (Jan 2025)
+- [Show HN: Kotaemon for academic papers](https://news.ycombinator.com/item?id=42608494) (Jan 2025)
+- Another project was called out as an **unattributed fork** of Kotaemon — users recognized Kotaemon as the legitimate original
+
+### Community Health Assessment
+
+| Signal | Status |
+|--------|--------|
+| Recent releases | v0.11.2 (Mar 2026) — active |
+| ThoughtWorks Radar | Listed in "Assess" ring |
+| HN appearances | Multiple front-page hits |
+| Reddit presence | **Low** compared to Open WebUI/AnythingLLM |
+| YouTube coverage | **Almost none** |
+| Maintainer responsiveness | **Slow** — unanswered discussions, long-open issues |
+| Community type | **Company-driven** (Cinnamon AI), not community-driven |
+
+**Verdict:** Not abandoned (recent releases prove that), but **company-driven with stretched-thin maintainers**. Technically impressive, small but loyal user base. Biggest risk is maintainer bandwidth.
+
+### Who Should Use Kotaemon
+
+| Good Fit | Bad Fit |
+|----------|---------|
+| Researchers & academics | Non-technical users wanting plug-and-play |
+| Technical users who value RAG quality | Teams needing enterprise access controls |
+| People comfortable with Python dependency issues | Users wanting large community support |
+| Document QA with source verification | General-purpose AI chat (→ Open WebUI) |
+| Using GPT-4/Claude (citations work best) | Running only small local LLMs |
+
 ## Key Sources
 
 - [Kotaemon GitHub](https://github.com/Cinnamon/kotaemon)
