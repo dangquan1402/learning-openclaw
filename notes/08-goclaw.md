@@ -324,6 +324,101 @@ kg_relations: source_id → target_id, relation_type, properties, confidence
 | **Concurrent writes** | Race condition on shared files | PostgreSQL transactions |
 | **Daily logs** | `memory/YYYY-MM-DD.md` files | Same paths, stored in DB |
 
+## Browser Control (Two Paths)
+
+GoClaw supports browser automation via two approaches:
+
+| Path | Technology | Pros | Cons |
+|------|-----------|------|------|
+| **Native go-rod** (built-in) | Chrome DevTools Protocol, `pkg/browser/` | Zero overhead, same process, multi-tenant isolation, 11 actions | Chrome only |
+| **Playwright MCP** (external) | Connect via `mcp_servers` config | Cross-browser (Chrome/Firefox/WebKit), richer selectors | Extra Node.js process, ~100MB overhead |
+
+### Native Browser Actions
+
+`start`, `stop`, `status`, `tabs`, `open`, `close`, `navigate`, `snapshot`, `screenshot`, `console`, `act` (click/type/press/hover/wait/evaluate)
+
+### Playwright MCP Config
+
+```json
+"mcp_servers": {
+  "playwright": {
+    "transport": "stdio",
+    "command": "npx",
+    "args": ["@anthropic/mcp-playwright"],
+    "tool_prefix": "pw"
+  }
+}
+```
+
+Tools auto-register as `mcp_pw__browser_navigate`, `mcp_pw__browser_click`, etc. No code changes needed.
+
+## Deployment Purpose: Personal vs Enterprise
+
+### Two Fundamentally Different Products
+
+| | Personal (OpenClaw) | Enterprise (GoClaw) |
+|---|---|---|
+| **Who controls it** | You own & run it | Company owns & runs it |
+| **Account access** | You give the bot YOUR credentials | Company pre-configures service accounts |
+| **Users** | Just you | Employees assigned by admin |
+| **Trust model** | You trust yourself | Company trusts platform, employees trust company |
+| **Social media** | Bot posts AS YOU | Bot posts to COMPANY accounts |
+| **Browser auth** | You log in, bot reuses your session | Service accounts managed by IT |
+| **Credentials** | You paste API keys in config | IT admin manages, users never see keys |
+
+### How Users "Give Access" to Accounts
+
+**Personal (OpenClaw):**
+- Paste API keys in config/env vars
+- Log into Chrome, bot reuses cookies (Extension Relay mode)
+- Authorize OAuth apps (like x-poster) that act on your behalf
+- You are the only user — you trust the bot with everything
+
+**Enterprise (GoClaw):**
+- Users DON'T give personal credentials
+- IT admin configures service accounts (company Twitter, Facebook)
+- Users interact via chat → bot uses company credentials
+- RBAC controls who can trigger what actions
+- Per-user audit logs track all actions
+
+### The Missing Piece: User-Facing OAuth Consent
+
+Neither OpenClaw nor GoClaw natively handles the case where **end users grant access to their own accounts** (e.g., "Connect your Twitter"). To build this, you'd need:
+
+```
+1. User clicks "Connect Twitter" in web dashboard
+       │
+2. Redirected to Twitter OAuth → user authorizes your app
+       │
+3. Token stored (encrypted) per-user in database
+       │
+4. Bot uses that user's token when posting on their behalf
+```
+
+**GoClaw is much closer** to supporting this because it has:
+- Per-user database storage (`tenant_id + user_id` scoping)
+- AES-256-GCM encryption for credentials
+- API key management infrastructure
+- Web dashboard (React 19) to build the UI on
+
+**What you'd need to build:**
+- OAuth consumer endpoints (redirect URI handler, token exchange)
+- Per-user credential storage table (or extend existing `user_agent_profiles`)
+- UI flow in the web dashboard ("Connect your accounts" page)
+- Token refresh logic (most OAuth tokens expire)
+- Skill that reads per-user tokens and posts on their behalf
+
+This is essentially building a **SaaS layer** on top of GoClaw — turning it from "company tool" into "user-facing product."
+
+### Decision Framework
+
+| Use Case | Choose | Why |
+|----------|--------|-----|
+| Personal assistant for yourself | OpenClaw | Simpler, larger ecosystem, your own keys |
+| Internal team tool | GoClaw | Multi-tenant, RBAC, per-user isolation |
+| SaaS product (users connect own accounts) | GoClaw + custom OAuth | Closest architecture, needs OAuth layer built |
+| Public-facing bot (no user accounts) | Either + sandbox mode | Lock down tools, no personal data |
+
 ## Key Docs & Sources
 
 - [GoClaw GitHub](https://github.com/nextlevelbuilder/goclaw)
