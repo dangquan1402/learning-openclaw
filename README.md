@@ -34,6 +34,7 @@ A structured knowledge base for learning [OpenClaw](https://github.com/openclaw/
 | # | Topic | Notes | Status |
 |---|-------|-------|--------|
 | 6 | [GoClaw (Go Rewrite)](notes/08-goclaw.md) | Multi-tenant, PostgreSQL, ~35MB RAM, 5-layer security | ⬜ |
+| 7 | [Chat-with-Documents Landscape](notes/09-chat-with-docs.md) | Top 15 RAG projects ranked: Dify, Open WebUI, RAGFlow, etc. | ⬜ |
 
 ### Quick Reference
 - [Resources & Links](notes/06-resources.md) — Docs, tutorials, community links
