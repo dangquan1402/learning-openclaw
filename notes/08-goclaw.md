@@ -172,6 +172,158 @@ make up
 7. **Vietnamese-centric core team** — may affect English docs/support
 8. **No native mobile apps** — web dashboard only (mobile-optimized)
 
+## User Management (Per-User, Not All-in-One)
+
+GoClaw is **definitively per-user**, unlike OpenClaw's single-operator model.
+
+### How Users Work
+
+- **No signup page** — users identified by `user_id` string from messaging channel (Telegram ID, Discord ID, etc.) or `X-GoClaw-User-Id` HTTP header
+- **First interaction auto-creates** a user profile (`user_agent_profiles` table)
+- **Admins add users to tenants** via API: `POST /v1/tenants/{id}/users`
+- **Web dashboard** has full tenant admin section for user management
+
+### 5 User Roles
+
+| Role | Access |
+|------|--------|
+| `owner` | Full control, cross-tenant access (set via `GOCLAW_OWNER_IDS` env) |
+| `admin` | Full access within tenant (agents, config, API keys) |
+| `operator` | Read + write (chat, sessions, agent management) |
+| `member` | Standard user access |
+| `viewer` | Read-only |
+
+### Authentication (Cascading Priority)
+
+1. **Gateway Token** — shared bearer token, grants admin role (dev/single-admin)
+2. **API Keys** — format `goclaw_` + 32 hex chars, SHA-256 hashed at rest, tenant-scoped
+3. **Browser Pairing** — `X-GoClaw-Sender-Id` header, grants operator role
+4. **No auth** — falls back to operator (dev mode only)
+5. **None** → 401 Unauthorized
+
+**No OAuth for end users.** Authentication is stateless (bearer token or API key per request).
+
+### Per-User Isolation
+
+- Every DB query includes `WHERE tenant_id = $N`
+- Each user gets their own: memory, knowledge graph, context files (USER.md), session history
+- API keys bound to specific owner (`owner_id` overrides any header)
+- Agent sharing is explicit via `agent_shares` table with per-share roles
+
+## Memory Management (PostgreSQL-Based)
+
+### Per-User by Default
+
+- Memory queries filter by `agent_id + user_id + tenant_id`
+- Opt-in shared mode: queries filter by `agent_id + tenant_id` only (org-wide memory)
+- **Users cannot see each other's memory**
+
+### Schema (vs OpenClaw's Markdown Files)
+
+**OpenClaw:** `MEMORY.md` + `memory/YYYY-MM-DD.md` files on disk
+
+**GoClaw:** Two PostgreSQL tables:
+
+```sql
+-- Documents (equivalent of memory files)
+memory_documents:
+  agent_id UUID, user_id VARCHAR(255), tenant_id UUID
+  path TEXT, content TEXT, hash VARCHAR(64)
+  UNIQUE(agent_id, COALESCE(user_id, ''), path)
+
+-- Chunks (for semantic search)
+memory_chunks:
+  document_id (FK), agent_id, user_id, tenant_id
+  text content, start_line, end_line
+  embedding vector(1536)    -- pgvector
+  tsv tsvector               -- full-text search
+```
+
+### Hybrid Search (3-Phase)
+
+```
+Query → [FTS Phase] + [Vector Phase] → Hybrid Merge → Results
+         (30% weight)   (70% weight)    (deduplicate + boost personal 1.2x)
+```
+
+1. **FTS Phase**: PostgreSQL `plainto_tsquery` + `ts_rank()` scoring
+2. **Vector Phase**: pgvector `<=>` cosine distance, embedding via configured provider
+3. **Hybrid Merge**: Dedup by `(Path, StartLine)`, weighted merge, **personal chunks get 1.2x boost**
+
+**Fallback**: If FTS returns nothing (non-English), falls back to `ILIKE` keyword search.
+
+**Defaults**: max chunk 1000 bytes, max 6 results per search.
+
+### Daily Logs (Memory Flush)
+
+Same concept as OpenClaw but database-backed:
+
+- Writes to paths like `memory/2026-03-24.md` in `memory_documents` table
+- **Trigger**: Before session compaction when token count exceeds threshold
+- **Process**: Last 10 messages → LLM at temperature 0.3 → writes via `memStore.PutDocument()`
+- **Fallback**: If LLM produces no tool calls, regex extraction on last 20 messages → writes to `memory/YYYY-MM-DD-auto-extract.md`
+- Documents are appended (not overwritten) and immediately indexed
+
+### Knowledge Graph (Extra Layer)
+
+GoClaw adds a knowledge graph OpenClaw doesn't have:
+
+```sql
+kg_entities: name, type, description, properties JSONB, confidence, embedding
+kg_relations: source_id → target_id, relation_type, properties, confidence
+```
+
+- LLM-driven extraction builds the graph from conversations
+- Hybrid search: ILIKE (0.3) + vector (0.7)
+- Per-user scoped with shared mode available
+
+## Multi-Tenant Architecture
+
+### Column-Based Isolation (Not RLS, Not Schema-per-Tenant)
+
+- **Every table** has `tenant_id UUID NOT NULL` column (30+ tables)
+- **Every SQL query** includes `WHERE tenant_id = $N` — fail-closed
+- Tenant resolved **from key binding**, not client headers (prevents impersonation)
+- Unique constraints are tenant-scoped: `UNIQUE(tenant_id, agent_key)`
+
+### Tenant Resolution
+
+| Source | Resolution |
+|--------|-----------|
+| API keys | `tenant_id` field on the key |
+| Gateway tokens | Owner membership or master tenant |
+| Chat channels | Baked into `channel_instances` config |
+| System keys | `X-GoClaw-Tenant-Id` header |
+
+### Session Isolation
+
+- WebSocket sessions: tenant scope persists for session lifetime
+- Event filtering: three-mode server-side filter prevents cross-tenant leakage
+- Access revocation: removing user triggers `EventTenantAccessRevoked` → immediate disconnect
+
+### Security Summary
+
+| Layer | Protection |
+|-------|-----------|
+| API keys | SHA-256 hashed at rest, 5-min TTL cache with pubsub invalidation |
+| LLM keys | AES-256-GCM encrypted (format: `aes-gcm:` + base64) |
+| File URLs | HMAC-signed tokens (`?ft=` parameter) |
+| Cross-tenant | Only `GOCLAW_OWNER_IDS` can access other tenants |
+
+## OpenClaw vs GoClaw: User & Memory Comparison
+
+| Aspect | OpenClaw | GoClaw |
+|--------|----------|--------|
+| **User model** | Single operator (personal assistant) | Multi-tenant, per-user isolation |
+| **User roles** | None (owner only) | 5 roles (owner/admin/operator/member/viewer) |
+| **Auth** | Gateway token + pairing | Cascading: token → API key → pairing |
+| **Memory storage** | Markdown files on disk | PostgreSQL + pgvector |
+| **Memory isolation** | MEMORY.md shared, group sessions restricted | Per-user by default, opt-in sharing |
+| **Memory search** | BM25 + optional vector (SQLite) | Hybrid FTS + vector (PostgreSQL) |
+| **Knowledge graph** | None | Built-in (entities + relations) |
+| **Concurrent writes** | Race condition on shared files | PostgreSQL transactions |
+| **Daily logs** | `memory/YYYY-MM-DD.md` files | Same paths, stored in DB |
+
 ## Key Docs & Sources
 
 - [GoClaw GitHub](https://github.com/nextlevelbuilder/goclaw)
