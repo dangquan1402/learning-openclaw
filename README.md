@@ -26,6 +26,7 @@ A structured knowledge base for learning [OpenClaw](https://github.com/openclaw/
 | 2.3 | [Efficient Memory Loading](notes/02c-memory-loading.md) | Architecture | Semantic search, token budgets, optimization patterns | ⬜ |
 | 2.4 | [Novel Tech vs Prior Art](notes/02d-novel-tech.md) | Architecture | What makes OpenClaw different from AutoGPT, LangChain, etc. | ⬜ |
 | 2.5 | [Single-User vs Multi-User](notes/02e-user-model.md) | Architecture | User model, memory isolation, access control, log privacy | ⬜ |
+| 2.6 | [Concurrency & Scaling](notes/02f-concurrency.md) | Architecture | Lane queue, race conditions, 10-user patterns, K8s/Docker | ⬜ |
 | 5.1 | [Browser Control & Social Media](notes/05a-browser-control.md) | Advanced | Playwright, posting to FB/X/YouTube, web automation | ⬜ |
 
 ### Quick Reference
