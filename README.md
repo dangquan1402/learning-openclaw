@@ -24,6 +24,7 @@ A structured knowledge base for learning [OpenClaw](https://github.com/openclaw/
 | 2.1 | [Integration Protocol](notes/02a-integration-protocol.md) | Architecture | Channel adapters, message routing, multi-agent | ⬜ |
 | 2.2 | [Memory System](notes/02b-memory-system.md) | Architecture | Two-tier memory, MEMORY.md, daily logs, memory tools | ⬜ |
 | 2.3 | [Efficient Memory Loading](notes/02c-memory-loading.md) | Architecture | Semantic search, token budgets, optimization patterns | ⬜ |
+| 5.1 | [Browser Control & Social Media](notes/05a-browser-control.md) | Advanced | Playwright, posting to FB/X/YouTube, web automation | ⬜ |
 
 ### Quick Reference
 - [Resources & Links](notes/06-resources.md) — Docs, tutorials, community links
