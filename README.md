@@ -29,6 +29,12 @@ A structured knowledge base for learning [OpenClaw](https://github.com/openclaw/
 | 2.6 | [Concurrency & Scaling](notes/02f-concurrency.md) | Architecture | Lane queue, race conditions, 10-user patterns, K8s/Docker | ⬜ |
 | 5.1 | [Browser Control & Social Media](notes/05a-browser-control.md) | Advanced | Playwright, posting to FB/X/YouTube, web automation | ⬜ |
 
+### Ecosystem Research
+
+| # | Topic | Notes | Status |
+|---|-------|-------|--------|
+| 6 | [GoClaw (Go Rewrite)](notes/08-goclaw.md) | Multi-tenant, PostgreSQL, ~35MB RAM, 5-layer security | ⬜ |
+
 ### Quick Reference
 - [Resources & Links](notes/06-resources.md) — Docs, tutorials, community links
 - [Glossary](notes/07-glossary.md) — Key terms and definitions
