@@ -38,6 +38,18 @@ A structured knowledge base for learning [OpenClaw](https://github.com/openclaw/
 | 7 | [Chat-with-Documents Landscape](notes/09-chat-with-docs.md) | Top 15 RAG projects ranked: Dify, Open WebUI, RAGFlow, etc. | ⬜ |
 | 7.1 | [RAG Limitations & Build vs Buy](notes/10-rag-limitations.md) | Real failures, tool problems, RAG vs long context, when to build your own | ⬜ |
 | 7.2 | [Kotaemon Deep Dive](notes/11-kotaemon.md) | PDF citations, 3 GraphRAG modes, hybrid search, 5 reasoning pipelines | ⬜ |
+| 8 | [DeepAgents Investigation](notes/12-deepagents.md) | LangChain's agent harness: planning, filesystem context, subagents, CLI, evals | ⬜ |
+| 9 | [LangGraph Investigation](notes/13-langgraph.md) | Low-level stateful agent runtime: checkpoints, interrupts, memory, deployment | ⬜ |
+| 10 | [Master Agent Control Comparison](notes/14-master-agent-team-control.md) | How OpenClaw, GoClaw, LangGraph, and DeepAgents handle delegation, parallel workers, and final output control | ⬜ |
+| 11 | [GoClaw Team Execution](notes/15-goclaw-team-execution.md) | Self-clone spawn vs team delegation, task board control, lead-side synthesis | ⬜ |
+| 12 | [DeepAgents Subagent Architecture](notes/16-deepagents-subagent-architecture.md) | Sync/async subagents, output isolation, backends, and supervisor control | ⬜ |
+| 13 | [Role-Based vs Supervisor Executors](notes/17-role-based-vs-supervisor-executors.md) | What changed from specialized agents to supervisor/executor patterns, and which system has the stronger self-clone worker | ⬜ |
+| 14 | [Master/Subagent Interaction](notes/18-master-subagent-interaction.md) | How completion is signaled: announce, tool return, graph state, or database-backed task status | ⬜ |
+| 15 | [Master/Worker Sequence Diagrams](notes/19-master-worker-sequence-diagrams.md) | End-to-end runtime flows for OpenClaw, GoClaw, DeepAgents, and LangGraph | ⬜ |
+| 16 | [Subagent Nesting Depth](notes/20-nesting-depth-by-system.md) | Which systems allow `master -> child -> child` and which prefer flat supervisor/worker designs | ⬜ |
+| 17 | [Claude Code Agent Teams](notes/21-claude-code-agent-teams.md) | Claude Code subagents vs agent teams, shared task list, teammate messaging, and comparison to GoClaw/DeepAgents | ⬜ |
+| 18 | [Claude Code Todo Tracking](notes/22-claude-code-todo-tracking.md) | TodoWrite lifecycle, streaming progress, and how todo tracking differs from a full team task board | ⬜ |
+| 19 | [Should OpenClaw Adopt Todos and a Masterboard?](notes/23-should-openclaw-adopt-todos-and-masterboard.md) | Recommendation: add lightweight todo tracking first, then a shared board only for real team workflows | ⬜ |
 
 ### Quick Reference
 - [Resources & Links](notes/06-resources.md) — Docs, tutorials, community links

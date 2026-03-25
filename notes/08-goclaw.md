@@ -10,8 +10,8 @@ A **ground-up rewrite of OpenClaw in Go** — multi-tenant AI agent platform tha
 
 - **License:** MIT
 - **Created:** 2026-02-22 (~1 month old)
-- **Stars:** 1,085 | **Forks:** 312 | **Contributors:** 30
-- **Latest:** v2.8.1 (active daily development)
+- **Stars:** 1,136 | **Forks:** 335 | **Contributors:** 30+
+- **Latest:** v2.18.1 (published Mar 25, 2026; active daily development)
 - **Core team:** Vietnamese developer community (NextLevelBuilder)
 
 ## OpenClaw vs GoClaw at a Glance
@@ -79,6 +79,51 @@ A **ground-up rewrite of OpenClaw in Go** — multi-tenant AI agent platform tha
 10. **7 messaging channels** — includes Zalo OA, Zalo Personal, Feishu/Lark (not in OpenClaw)
 11. **Docker sandbox** — isolated untrusted code execution
 12. **Web dashboard** — React 19 SPA, mobile-optimized
+
+## Are the "Agent Teams" Claims Real?
+
+**Short answer: mostly yes.** This is not just homepage language.
+
+The current repository includes:
+
+- dedicated architecture docs: `docs/11-agent-teams.md`
+- a separate WebSocket event reference: `docs/13-ws-team-events.md`
+- database migrations for team tables and task evolution
+- backend methods for team CRUD, members, workspace, and tasks
+- PostgreSQL store implementations for teams and task lifecycle
+- React dashboard pages for a team board, members, task dialogs, and audit logs
+
+The documented model is more than simple subagent spawning. It includes:
+
+- a **lead agent** plus member agents
+- a shared **task board**
+- `blocked_by` task dependencies
+- a **mailbox** for direct and broadcast team messages
+- sync and async delegation
+- accumulated result announcements back to the lead
+- WebSocket events for delegation, task lifecycle, and UI updates
+
+So the claim that GoClaw is building a more explicit **agent team** layer than OpenClaw appears technically substantiated.
+
+## What This Means Compared to OpenClaw
+
+GoClaw's "better agent team" claim is credible in one specific sense: it has a more explicit coordination model for multi-agent work than the OpenClaw architecture documented in this repo.
+
+### Where GoClaw looks stronger
+
+- Team concepts are first-class instead of implied through generic delegation
+- Task state, dependencies, and review steps are modeled in storage
+- The dashboard appears designed to observe team activity directly
+- Event streams and task lifecycle are documented in detail
+
+### Where the claim is still not proven
+
+- Rich docs and code paths do **not** prove operational reliability
+- The project is still very young and moving fast
+- There is not yet strong public evidence that the team system is battle-tested at scale
+- "Better" depends on the target: team orchestration, messaging UX, ecosystem maturity, and operator simplicity are different criteria
+
+The fair reading is: **GoClaw appears to have a more ambitious and more structured team-orchestration layer, but it is too early to call it categorically better overall than OpenClaw.**
 
 ## Why Go?
 
