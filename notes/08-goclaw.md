@@ -8,7 +8,7 @@ A **ground-up rewrite of OpenClaw in Go** — multi-tenant AI agent platform tha
 
 > *"OpenClaw rebuilt in Go — with multi-tenant isolation, 5-layer security, and native concurrency."*
 
-- **License:** MIT
+- **License:** CC BY-NC 4.0
 - **Created:** 2026-02-22 (~1 month old)
 - **Stars:** 1,136 | **Forks:** 335 | **Contributors:** 30+
 - **Latest:** v2.18.1 (published Mar 25, 2026; active daily development)

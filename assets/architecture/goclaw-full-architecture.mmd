@@ -1,0 +1,18 @@
+flowchart TD
+    U[User / Admin / Operator] --> CH[Channels + Web UI + API]
+    CH --> GW[Gateway / RPC / HTTP]
+    GW --> SEC[Permission + Policy Layers]
+    SEC --> LOOP[Agent Loop]
+    LOOP --> SP[System Prompt Builder]
+    LOOP --> TOOLS[Tools]
+    LOOP --> TEAM[Team Workflow Layer]
+    LOOP --> SUB[Spawn / Delegation]
+    TOOLS --> MEM[Memory + Knowledge Graph]
+    TOOLS --> FS[Workspace / Exec / Web / MCP / Media]
+    TEAM --> BOARD[Task Board]
+    TEAM --> MAIL[Team Mailbox]
+    TEAM --> APPROVAL[Review / Approve / Reject]
+    MEM --> DB[(PostgreSQL + pgvector)]
+    BOARD --> DB
+    MAIL --> DB
+    GW --> DB

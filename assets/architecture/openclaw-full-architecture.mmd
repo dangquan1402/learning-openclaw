@@ -1,0 +1,17 @@
+flowchart TD
+    U[User] --> C[Channel Adapter]
+    C --> G[Gateway / Control Plane]
+    G --> S[Session Router]
+    S --> A[Agent Run]
+    A --> P[System Prompt + Project Context]
+    A --> T[Tools]
+    A --> M[Memory]
+    A --> K[Skills]
+    A --> SA[Subagents]
+    T --> X[Filesystem / Web / Browser / Message / Nodes / Canvas / Cron / Gateway]
+    M --> MF[Markdown Memory + Search]
+    K --> SK[SKILL.md Instructions]
+    SA --> AN[Announce Back to Parent]
+    A --> G
+    G --> C
+    C --> U
