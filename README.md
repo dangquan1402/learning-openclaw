@@ -77,6 +77,7 @@ A structured knowledge base for learning [OpenClaw](https://github.com/openclaw/
 | 44 | [GoClaw Full Architecture](notes/49-goclaw-full-architecture.md) | End-to-end architecture of the gateway, policy layers, agent loop, memory, teams, and storage | ⬜ |
 | 45 | [DeepAgents Full Architecture](notes/50-deepagents-full-architecture.md) | End-to-end architecture of the base prompt, middleware, LangGraph runtime, memory, and subagents | ⬜ |
 | 46 | [Claude Code Full Architecture](notes/51-claude-code-full-architecture.md) | End-to-end architecture of the runtime system payload, tools, memory, permissions, and delegation layers | ⬜ |
+| 47 | [MCPorter Investigation](notes/52-mcporter.md) | TypeScript runtime/CLI for calling MCP servers directly, generating typed clients, and packaging single-purpose CLIs | ⬜ |
 
 ### Ecosystem Research Sub-topics
 
